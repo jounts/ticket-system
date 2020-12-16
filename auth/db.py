@@ -75,6 +75,17 @@ def update_session_id(username: str, session_id: str) -> None:
         cursor.execute(exec_msg, (session_id, username))
 
 
+def get_session_id(username: str) -> str:
+    conn = Connector()
+    with conn as cursor:
+        exec_msg = f"SELECT {conf.AUTH_F_SID} " \
+                   f"FROM {conf.AUTH_TABLE_NAME} " \
+                   f"WHERE {conf.AUTH_F_USERNAME} = %s"
+        cursor.execute(exec_msg, (username,))
+        exec_response = cursor.fetchone()
+        return exec_response[0]
+
+
 def user_exists(username: str) -> bool:
     """
     Existing username in db function
@@ -105,4 +116,5 @@ def account_exists(username: str, password: str) -> bool:
 
 
 if __name__ == '__main__':
-    db_check()
+    # db_check()
+    get_session_id(conf.NAME)
