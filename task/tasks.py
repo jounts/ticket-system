@@ -3,9 +3,10 @@ db check and prepare
 """
 
 import itertools
+import os
 
 from common.db import Connector
-from common import conf
+import conf
 
 
 def db_check() -> None:
@@ -14,6 +15,8 @@ def db_check() -> None:
     :return: None
     """
     conn = Connector()
+
+    print(os.getenv('PSQL_HOST'))
 
     with conn as cursor:
         cursor.execute(f"SELECT table_name "
@@ -38,11 +41,11 @@ def db_prepare(conn: Connector) -> None:
     """
     with conn as cursor:
         exec_msg = "CREATE TABLE tasks(" \
-                   f"{conf.TASK_F_NAME} varchar(50) NOT NULL," \
-                   f"{conf.TASK_F_LEVEL} integer NOT NULL," \
-                   f"{conf.TASK_F_USER} varchar(50) NOT NULL," \
+                   f"{conf.TASK_F_NAME} char(50) PRIMARY KEY NOT NULL," \
                    f"{conf.TASK_F_STATUS} state NOT NULL," \
-                   f"PRIMARY KEY ({conf.TASK_F_NAME}))"
+                   f"{conf.TASK_F_LEVEL} integer NOT NULL," \
+                   f"{conf.TASK_F_USER} text[] NOT NULL)"
+
         cursor.execute(exec_msg)
 
 
@@ -65,13 +68,13 @@ def get_task_execs(name: str) -> tuple:
     with conn as cursor:
         exec_msg = f"SELECT {conf.AUTH_F_USERNAME} " \
                    f"FROM {conf.AUTH_TABLE_NAME} " \
-                   f"WHERE {conf.AUTH_F_SKILL} = (" \
-                   f"SELECT{conf.TASK_F_LEVEL} " \
-                   f"FROM{conf.TASK_TABLE_NAME}" \
-                   f"WHERE{conf.TASK_F_NAME} = %s)"
+                   f"WHERE {conf.AUTH_F_SKILL} > (" \
+                   f"SELECT {conf.TASK_F_LEVEL} " \
+                   f"FROM {conf.TASK_TABLE_NAME} " \
+                   f"WHERE {conf.TASK_F_NAME} = %s)"
         cursor.execute(exec_msg, (name,))
-        exec_response = cursor.fetchone()
-        return exec_response[0]
+        exec_response = cursor.fetchall()
+        return exec_response
 
 
 def task_exists(name: str) -> bool:
@@ -89,3 +92,4 @@ def task_exists(name: str) -> bool:
 
 if __name__ == '__main__':
     db_check()
+    print(get_task_execs('test_task2'))
