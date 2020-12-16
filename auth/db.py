@@ -60,6 +60,21 @@ def insert_test_user(conn: Connector) -> None:
             cursor.execute(exec_msg, (conf.NAME, conf.PASSWORD, '-1', conf.SKILL))
 
 
+def update_session_id(username: str, session_id: str) -> None:
+    """
+    Update session id in db function
+    :param username: str
+    :param session_id: str
+    :return: None
+    """
+    conn = Connector()
+    with conn as cursor:
+        exec_msg = f"UPDATE {conf.AUTH_TABLE_NAME} " \
+                   f"SET {conf.AUTH_F_SID} = %s " \
+                   f"WHERE {conf.AUTH_F_USERNAME} = %s"
+        cursor.execute(exec_msg, (session_id, username))
+
+
 def user_exists(username: str) -> bool:
     """
     Existing username in db function
