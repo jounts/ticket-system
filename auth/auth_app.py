@@ -36,13 +36,13 @@ def login():
             password = request.get_json()["password"]
 
         if account_exists(username, password):
-            session_id = create_session_id()
+            session_id = create_session_id(username)
             return make_response(jsonify({'sessionid': session_id}), 200)
 
         return "Invalid username/password supplied", 400
 
 
-@app.route('/auth/logout/', methods=['GET'])
+@app.route('/auth/logout/', methods=['POST'])
 def logout():
     username = ''
     json_parse = request.get_json()
@@ -52,11 +52,14 @@ def logout():
         if 'username' in json_parse:
             username = request.get_json()["username"]  # todo check for input
 
-        if user_exists(username) and int(get_session_id(username)):
-            update_session_id(username, '0')
-            return 'successful', 200
+        if user_exists(username):
+            if int(get_session_id(username)):
+                update_session_id(username, '0')
+                return 'successful', 200
 
-        return "", 401
+            return "user unauthorized", 401
+
+        return "Invalid username supplied", 400
 
 
 def create_session_id(username: str):
