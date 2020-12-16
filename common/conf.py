@@ -13,4 +13,5 @@ AUTH_F_SKILL: str = 'skill_lvl'
 TEST_KEY: bool = True
 NAME: str = 'test_user'
 PASSWORD: str = 'test_pass'
+SID = '0'
 SKILL: int = 4
