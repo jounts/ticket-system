@@ -57,7 +57,7 @@ def insert_test_user(conn: Connector) -> None:
             exec_msg = f"INSERT INTO {conf.AUTH_TABLE_NAME}" \
                        f"({conf.AUTH_F_USERNAME}, {conf.AUTH_F_PASSWORD}, {conf.AUTH_F_SID}, {conf.AUTH_F_SKILL}) " \
                        f"VALUES (%s, %s, %s, %s)"
-            cursor.execute(exec_msg, (conf.NAME, conf.PASSWORD, '-1', conf.SKILL))
+            cursor.execute(exec_msg, (conf.NAME, conf.PASSWORD, conf.SID, conf.SKILL))
 
 
 def update_session_id(username: str, session_id: str) -> None:
@@ -116,5 +116,4 @@ def account_exists(username: str, password: str) -> bool:
 
 
 if __name__ == '__main__':
-    # db_check()
-    get_session_id(conf.NAME)
+    db_check()
