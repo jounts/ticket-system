@@ -21,9 +21,9 @@ def db_check() -> None:
                        f"WHERE table_schema = 'public' "
                        f"ORDER BY table_name")
 
-        response = list(itertools.chain(*cursor.fetchall()))
+        exec_response = list(itertools.chain(*cursor.fetchall()))
 
-        if conf.AUTH_TABLE_NAME not in response:
+        if conf.AUTH_TABLE_NAME not in exec_response:
             db_prepare(conn)
 
         if conf.TEST_KEY:
@@ -52,8 +52,30 @@ def insert_test_user(conn: Connector) -> None:
     :param conn: Connection object
     :return: None
     """
+    if user_exists(conf.NAME, conn):
+        with conn as cursor:
+            exec_msg = f"INSERT INTO {conf.AUTH_TABLE_NAME}" \
+                       f"({conf.AUTH_F_USERNAME}, {conf.AUTH_F_PASSWORD}, {conf.AUTH_F_SID}, {conf.AUTH_F_SKILL}) " \
+                       f"VALUES (%s, %s, %s, %s)"
+            cursor.execute(exec_msg, (conf.NAME, conf.PASSWORD, '-1', conf.SKILL))
+
+
+def user_exists(username: str, conn: Connector) -> bool:
+    """
+    Existing username in db function
+    :param username: str
+    :param conn: Connection object
+    :return:
+    """
     with conn as cursor:
-        exec_msg = f"INSERT INTO {conf.AUTH_TABLE_NAME}" \
-                   f"({conf.AUTH_F_USERNAME}, {conf.AUTH_F_PASSWORD}, {conf.AUTH_F_SID}, {conf.AUTH_F_SKILL}) " \
-                   f"VALUES (%s, %s, %s, %s)"
-        cursor.execute(exec_msg, (conf.NAME, conf.PASSWORD, '-1', conf.SKILL))
+        exec_msg = f"SELECT username FROM {conf.AUTH_TABLE_NAME} where username = '{username}'"
+        cursor.execute(exec_msg)
+        exec_response = list(itertools.chain(*cursor.fetchall()))
+        if exec_response == username:
+            return True
+
+        return False
+
+
+if __name__ == '__main__':
+    db_check()
