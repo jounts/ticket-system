@@ -1,0 +1,9 @@
+AUTH_SERVER = 'http://localhost:8080'
+LOGIN_PATH = '/auth/login/'
+LOGOUT_PATH = '/auth/logout/'
+OK_STATUS = 200
+UN_AUTH_STATUS = 401
+BAD_RQ_STATUS = 400
+USERNAME_F = 'username'
+PASSWORD_F = 'password'
+SID_F = 'sessionid'
