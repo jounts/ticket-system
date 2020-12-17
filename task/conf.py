@@ -17,5 +17,5 @@ AUTH_F_SKILL: str = 'skill_lvl'
 TEST_KEY: bool = True
 NAME: str = 'test_task2'
 LEVEL: int = 3
-USER: tuple = ['test3','test4',]
+USER: str = ''
 STATUS: str = 'free'

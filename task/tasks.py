@@ -44,7 +44,7 @@ def db_prepare(conn: Connector) -> None:
                    f"{conf.TASK_F_NAME} char(50) PRIMARY KEY NOT NULL," \
                    f"{conf.TASK_F_STATUS} state NOT NULL," \
                    f"{conf.TASK_F_LEVEL} integer NOT NULL," \
-                   f"{conf.TASK_F_USER} text[] NOT NULL)"
+                   f"{conf.TASK_F_USER} char(50))"
 
         cursor.execute(exec_msg)
 
@@ -92,4 +92,3 @@ def task_exists(name: str) -> bool:
 
 if __name__ == '__main__':
     db_check()
-    print(get_task_execs('test_task2'))
