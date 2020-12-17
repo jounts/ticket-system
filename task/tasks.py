@@ -90,5 +90,26 @@ def task_exists(name: str) -> bool:
         return cursor.fetchone() is not None
 
 
+def get_tasks() -> tuple:
+    conn = Connector()
+    with conn as cursor:
+        exec_msg = f"SELECT * " \
+                   f"FROM {conf.TASK_TABLE_NAME}"
+        cursor.execute(exec_msg)
+        exec_response = cursor.fetchall()
+        return exec_response
+
+
+def get_task_by_name(name: str) -> tuple:
+    conn = Connector()
+    with conn as cursor:
+        exec_msg = f"SELECT * " \
+                   f"FROM {conf.TASK_TABLE_NAME} " \
+                   f"WHERE {conf.TASK_F_NAME}='{name}' "
+        cursor.execute(exec_msg)
+        exec_response = cursor.fetchall()
+        return exec_response
+
+
 if __name__ == '__main__':
     db_check()
