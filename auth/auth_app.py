@@ -30,13 +30,13 @@ def login():
     login view
     """
     username = password = ''
-    json_parse = request.get_json()
     if not isinstance(request.get_json(), dict):
         return "json required", 400
     else:
+        json_parse = request.get_json()
         if 'username' in json_parse and 'password' in json_parse:
-            username = request.get_json()["username"]
-            password = request.get_json()["password"]
+            username = json_parse["username"]
+            password = json_parse["password"]
 
         if account_exists(username, password):
             session_id = create_session_id(username)
@@ -51,12 +51,12 @@ def logout():
     logout view
     """
     username = ''
-    json_parse = request.get_json()
     if not isinstance(request.get_json(), dict):
         return "json required", 400
     else:
+        json_parse = request.get_json()
         if 'username' in json_parse:
-            username = request.get_json()["username"]  # todo check for input
+            username = json_parse["username"]  # todo check for input
 
         if user_exists(username):
             if int(get_session_id(username)):
