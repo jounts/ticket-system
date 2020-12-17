@@ -26,6 +26,9 @@ def main():
 
 @app.route('/auth/login/', methods=['POST'])
 def login():
+    """
+    login view
+    """
     username = password = ''
     json_parse = request.get_json()
     if not isinstance(request.get_json(), dict):
@@ -44,6 +47,9 @@ def login():
 
 @app.route('/auth/logout/', methods=['POST'])
 def logout():
+    """
+    logout view
+    """
     username = ''
     json_parse = request.get_json()
     if not isinstance(request.get_json(), dict):
